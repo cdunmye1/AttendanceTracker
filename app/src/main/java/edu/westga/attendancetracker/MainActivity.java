@@ -47,10 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //        arrayOfUsers.add(new Student(8, "Mark Jackson"));
 //        arrayOfUsers.add(new Student(9, "Steven Robinson"));
 
-        final ArrayList<Student> arrayOfUsers = dbHandler.getStudents();
-        for (Student student: arrayOfUsers) {
-            System.out.println(student.getName());
-        }
+        final ArrayList<Student> arrayOfUsers = dbHandler.getStudentsFromClass(1);
         final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
                 android.R.layout.simple_list_item_1, arrayOfUsers);
         final ListView listView = (ListView) findViewById(R.id.listView);

@@ -14,36 +14,40 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "studentAttendanceDB.db";
-    public static final String TABLE_STUDENTS = "students";
+    public static final String TABLE_STUDENTS = "Students";
 
     public static final String STUDENT_COLUMN_ID = "_id";
     public static final String STUDENT_COLUMN_NAME = "name";
 
     public MyDBHandler(Context context, String name,
                        SQLiteDatabase.CursorFactory factory, int version) {
-        //super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
         //calling it with null to create it in memory
-        super(context, null, factory, DATABASE_VERSION);
+        //super(context, null, factory, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PRODUCTS_TABLE = "CREATE TABLE " +
+        String CREATE_STUDENTS_TABLE = "CREATE TABLE " +
                 TABLE_STUDENTS + "("
                 + STUDENT_COLUMN_ID + " INTEGER PRIMARY KEY," + STUDENT_COLUMN_NAME
                 + " TEXT" + ")";
-        String INSERT_STUDENT_DATA = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (1, 'Chad Stevens')";
-        String INSERT_STUDENT_DATA2 = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (2, 'Chris Dunmyer')";
-        String INSERT_STUDENT_DATA3 = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (3, 'Chris Dunmyer')";
-        String INSERT_STUDENT_DATA4= "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (4, 'Chris Dunmyer')";
-        String INSERT_STUDENT_DATA5 = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (5, 'Chris Dunmyer')";
+
+        String CREATE_CLASS_TABLE = "CREATE TABLE " +
+                "Class " + "("
+                + "_id" + " INTEGER PRIMARY KEY," + " name TEXT"
+                + ")";
+
+        String CREATE_STUDENT_ATTENDANCE_TABLE = "CREATE TABLE " +
+                "StudentAttendance " + "("
+                + "StudentID" + " INTEGER," + " ClassID INTEGER"
+                + " INTEGER, Date TEXT, Present INTEGER, PRIMARY KEY (StudentID, ClassID))";
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
-        db.execSQL(CREATE_PRODUCTS_TABLE);
-        db.execSQL(INSERT_STUDENT_DATA);
-        db.execSQL(INSERT_STUDENT_DATA2);
-        db.execSQL(INSERT_STUDENT_DATA3);
-        db.execSQL(INSERT_STUDENT_DATA4);
-        db.execSQL(INSERT_STUDENT_DATA5);
+        db.execSQL(CREATE_STUDENTS_TABLE);
+        db.execSQL(CREATE_CLASS_TABLE);
+        db.execSQL(CREATE_STUDENT_ATTENDANCE_TABLE);
+        addRecords(db);
     }
 
     @Override
@@ -53,8 +57,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<Student> getStudents() {
-        String query = "Select _id, name FROM " + TABLE_STUDENTS;
+    public ArrayList<Student> getStudentsFromClass(int classID) {
+        String query = "Select DISTINCT s._id, s.name FROM StudentAttendance sa " +
+                "JOIN Students s on s._id=sa.StudentID WHERE " +
+                "ClassID=" + classID;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -64,11 +70,43 @@ public class MyDBHandler extends SQLiteOpenHelper {
             int studentID = Integer.parseInt(cursor.getString(0));
             String name = cursor.getString(1);
             studentList.add(new Student(studentID, name));
-            System.out.println(studentID + name);
         }
 
         db.close();
         return studentList;
+    }
+
+    private void addRecords(SQLiteDatabase db) {
+        final ArrayList<Student> arrayOfUsers = new ArrayList<Student>();
+        arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
+        arrayOfUsers.add(new Student(2, "Bill Donovan"));
+        arrayOfUsers.add(new Student(3, "Henry Williams"));
+        arrayOfUsers.add(new Student(4, "Chad Smith"));
+        arrayOfUsers.add(new Student(5, "List Saunders"));
+        arrayOfUsers.add(new Student(6, "Kaitlyn Carlisle"));
+        arrayOfUsers.add(new Student(7, "Carly Snyder"));
+        arrayOfUsers.add(new Student(8, "Mark Jackson"));
+        arrayOfUsers.add(new Student(9, "Steven Robinson"));
+        for (Student student: arrayOfUsers)
+        {
+            String INSERT_STUDENT_DATA = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (" + student.getStudentID() + ", '" + student.getName() +"')";
+            db.execSQL(INSERT_STUDENT_DATA);
+        }
+
+        String insertClassData = "INSERT INTO Class (_id, name) VALUES (1, 'Software Development 101'); ";
+
+        String insertClassStudentData = "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (1, 1, 2016-01-02, 0); " +
+                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (2, 1, 2016-01-02, 1); " +
+                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (3, 1, 2016-01-02, 1); " +
+                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (4, 1, 2016-01-02, 0); " +
+                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ";
+
+        db.execSQL(insertClassData);
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (1, 1, 2016-01-02, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (2, 1, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (3, 1, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (4, 1, 2016-01-02, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ");
     }
 
 //    public void addProduct(Product product) {
