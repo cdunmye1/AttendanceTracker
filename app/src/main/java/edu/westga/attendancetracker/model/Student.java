@@ -23,6 +23,14 @@ public class Student {
         }
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public int getStudentID() {
+        return this.studentID;
+    }
+
     @Override
     public String toString() {
         if (this.isPresent == true) {
@@ -30,4 +38,6 @@ public class Student {
         }
         return "(Absent) - " + this.name;
     }
+
+
 }
