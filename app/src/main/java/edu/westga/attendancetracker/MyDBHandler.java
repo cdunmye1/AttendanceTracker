@@ -58,7 +58,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<Student> getStudentsFromClass(int CourseID) {
+    public ArrayList<Student> getStudentsFromCourse(int CourseID) {
         String query = "Select DISTINCT s._id, s.name FROM StudentAttendance sa " +
                 "JOIN Students s on s._id=sa.StudentID WHERE " +
                 "CourseID=" + CourseID;
@@ -119,12 +119,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 2016-01-02, 0); " +
                 "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ";
 
-        db.execSQL(insertClassData);
+        db.execSQL("INSERT INTO Course (_id, name) VALUES (1, 'Software Development 101'); ");
+        db.execSQL("INSERT INTO Course (_id, name) VALUES (2, 'Database Design 101'); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 2016-01-02, 0); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 2016-01-02, 1); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 2016-01-02, 1); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 2016-01-02, 0); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ");
+
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 2016-01-02, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 2016-01-02, 0); ");
     }
 
 //    public void addProduct(Product product) {

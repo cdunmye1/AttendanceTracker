@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create student list
         Course course = (Course) spinner.getSelectedItem();
-        final ArrayList<Student> arrayOfUsers = dbHandler.getStudentsFromClass(course.getClassID());
+        final ArrayList<Student> arrayOfUsers = dbHandler.getStudentsFromCourse(course.getClassID());
         final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
                 android.R.layout.simple_list_item_1, arrayOfUsers);
         final ListView listView = (ListView) findViewById(R.id.listView);

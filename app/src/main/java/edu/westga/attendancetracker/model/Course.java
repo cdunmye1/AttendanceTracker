@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class Course {
 
     private String name;
-    private int classID;
+    private int courseID;
     private ArrayList<Student> students;
 
-    public Course(int classID, String name) {
-        this.classID = classID;
+    public Course(int courseID, String name) {
+        this.courseID = courseID;
         this.name = name;
     }
 
@@ -25,7 +25,7 @@ public class Course {
     }
 
     public int getClassID() {
-        return this.classID;
+        return this.courseID;
     }
     public String getName() { return this.name; }
 
