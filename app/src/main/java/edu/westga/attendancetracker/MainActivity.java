@@ -31,62 +31,76 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
     private TextView dateView;
     private int year, month, day;
+    private Spinner courseSpinner;
+    private ArrayList<Student> arrayOfStudents;
+    private ArrayList<Course> arrayOfCourses;
+    //private ArrayAdapter<Course> spinnerAdapter;
+    //private ArrayAdapter<Student> adapter;
+    private ListView studentListView;
+    private MyDBHandler dbHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().hide();
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        MyDBHandler dbHandler = new MyDBHandler(this, null, null, 1);
-
-//        final ArrayList<Student> arrayOfUsers = new ArrayList<Student>();
-//        arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
-//        arrayOfUsers.add(new Student(2, "Bill Donovan"));
-//        arrayOfUsers.add(new Student(3, "Henry Williams"));
-//        arrayOfUsers.add(new Student(4, "Chad Smith"));
-//        arrayOfUsers.add(new Student(5, "List Saunders"));
-//        arrayOfUsers.add(new Student(6, "Kaitlyn Carlisle"));
-//        arrayOfUsers.add(new Student(7, "Carly Snyder"));
-//        arrayOfUsers.add(new Student(8, "Mark Jackson"));
-//        arrayOfUsers.add(new Student(9, "Steven Robinson"));
-
-
-        final ArrayList<Course> arrayOfCourses = dbHandler.getCourses();
-        final ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<Course>(this,
+        this.dbHandler = new MyDBHandler(this, null, null, 1);
+        this.arrayOfCourses = dbHandler.getCourses();
+        ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<Course>(this,
                 android.R.layout.simple_spinner_item, arrayOfCourses);
-        final Spinner spinner = (Spinner) findViewById(R.id.courseSpinner);
-        //spinner.setOnItemClickListener(new AdapterView);
-        spinner.setAdapter(spinnerAdapter);
 
+
+        this.courseSpinner = (Spinner) findViewById(R.id.courseSpinner);
+        this.courseSpinner.setAdapter(spinnerAdapter);
 
         // Create student list
-        Course course = (Course) spinner.getSelectedItem();
-        final ArrayList<Student> arrayOfUsers = dbHandler.getStudentsFromCourse(course.getClassID());
+        Course course = (Course) courseSpinner.getSelectedItem();
+
+        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
         final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
-                android.R.layout.simple_list_item_1, arrayOfUsers);
-        final ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                android.R.layout.simple_list_item_1, this.arrayOfStudents);
+
+        final ListView studentListView = (ListView) findViewById(R.id.listView);
+        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println(position);
-                arrayOfUsers.get(position).toggleIsPresent();
+                MainActivity.this.arrayOfStudents.get(position).toggleIsPresent();
                 adapter.notifyDataSetChanged();
             }
         });
-        listView.setAdapter(adapter);
+        studentListView.setAdapter(adapter);
+
+
+        courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("got here");
+                MainActivity.this.arrayOfStudents.clear();
+                MainActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getClassID());
+                for (Student student : MainActivity.this.arrayOfStudents) {
+                    System.out.println(student.toString());
+                }
+                adapter.clear();
+                adapter.addAll(MainActivity.this.arrayOfStudents);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
+
+
+
+
+
+
+
 
 
 
