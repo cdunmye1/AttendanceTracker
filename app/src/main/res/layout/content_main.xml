@@ -10,19 +10,45 @@
         android:layout_centerHorizontal="true"
         android:weightSum="1">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Enter Attendance for each Student:"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/courseSpinner"
+            android:layout_gravity="center_horizontal" />
+
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="310dp"
+            android:layout_height="100dp"
             android:id="@+id/listView"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.20" />
+            android:layout_weight="0.38" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
+            android:text="Set Date"
+            android:id="@+id/setDateButton"
+            android:onClick="setDate" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Date Here"
+            android:id="@+id/dateTextView" />
+
+        <Button
+            android:layout_width="114dp"
+            android:layout_height="wrap_content"
+            android:text="Submit"
             android:id="@+id/button"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.20" />
+            android:layout_gravity="right" />
     </LinearLayout>
 </RelativeLayout>

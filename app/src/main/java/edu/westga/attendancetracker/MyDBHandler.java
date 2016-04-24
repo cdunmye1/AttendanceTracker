@@ -8,6 +8,7 @@ import android.database.Cursor;
 
 import java.util.ArrayList;
 
+import edu.westga.attendancetracker.model.Course;
 import edu.westga.attendancetracker.model.Student;
 
 public class MyDBHandler extends SQLiteOpenHelper {
@@ -33,19 +34,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 + STUDENT_COLUMN_ID + " INTEGER PRIMARY KEY," + STUDENT_COLUMN_NAME
                 + " TEXT" + ")";
 
-        String CREATE_CLASS_TABLE = "CREATE TABLE " +
-                "Class " + "("
+        String CREATE_COURSE_TABLE = "CREATE TABLE " +
+                "Course " + "("
                 + "_id" + " INTEGER PRIMARY KEY," + " name TEXT"
                 + ")";
 
         String CREATE_STUDENT_ATTENDANCE_TABLE = "CREATE TABLE " +
                 "StudentAttendance " + "("
-                + "StudentID" + " INTEGER," + " ClassID INTEGER"
-                + " INTEGER, Date TEXT, Present INTEGER, PRIMARY KEY (StudentID, ClassID))";
+                + "StudentID" + " INTEGER," + " CourseID INTEGER"
+                + " INTEGER, Date TEXT, Present INTEGER, PRIMARY KEY (StudentID, CourseID))";
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
         db.execSQL(CREATE_STUDENTS_TABLE);
-        db.execSQL(CREATE_CLASS_TABLE);
+        db.execSQL(CREATE_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_ATTENDANCE_TABLE);
         addRecords(db);
     }
@@ -57,10 +58,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<Student> getStudentsFromClass(int classID) {
+    public ArrayList<Student> getStudentsFromClass(int CourseID) {
         String query = "Select DISTINCT s._id, s.name FROM StudentAttendance sa " +
                 "JOIN Students s on s._id=sa.StudentID WHERE " +
-                "ClassID=" + classID;
+                "CourseID=" + CourseID;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -74,6 +75,23 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         db.close();
         return studentList;
+    }
+
+    public ArrayList<Course> getCourses() {
+        String query = "Select _id, name FROM Course; ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Course> courseList = new ArrayList<Course>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int courseID = Integer.parseInt(cursor.getString(0));
+            String name = cursor.getString(1);
+            courseList.add(new Course(courseID, name));
+        }
+
+        db.close();
+        return courseList;
     }
 
     private void addRecords(SQLiteDatabase db) {
@@ -93,20 +111,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
             db.execSQL(INSERT_STUDENT_DATA);
         }
 
-        String insertClassData = "INSERT INTO Class (_id, name) VALUES (1, 'Software Development 101'); ";
+        String insertClassData = "INSERT INTO Course (_id, name) VALUES (1, 'Software Development 101'); ";
 
-        String insertClassStudentData = "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (1, 1, 2016-01-02, 0); " +
-                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (2, 1, 2016-01-02, 1); " +
-                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (3, 1, 2016-01-02, 1); " +
-                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (4, 1, 2016-01-02, 0); " +
-                "INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ";
+        String insertClassStudentData = "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 2016-01-02, 0); " +
+                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 2016-01-02, 1); " +
+                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 2016-01-02, 1); " +
+                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 2016-01-02, 0); " +
+                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ";
 
         db.execSQL(insertClassData);
-        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (1, 1, 2016-01-02, 0); ");
-        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (2, 1, 2016-01-02, 1); ");
-        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (3, 1, 2016-01-02, 1); ");
-        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (4, 1, 2016-01-02, 0); ");
-        db.execSQL("INSERT INTO StudentAttendance (StudentID, ClassID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 2016-01-02, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 2016-01-02, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 2016-01-02, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 2016-01-02, 1); ");
     }
 
 //    public void addProduct(Product product) {
