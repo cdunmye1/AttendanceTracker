@@ -2,6 +2,7 @@ package edu.westga.attendancetracker;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private DatePicker datePicker;
     private Calendar calendar;
     private TextView dateView;
+    private TextView resultTextView;
     private int year, month, day;
     private Spinner courseSpinner;
     private ArrayList<Student> arrayOfStudents;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     //private ArrayAdapter<Student> adapter;
     private ListView studentListView;
     private MyDBHandler dbHandler;
+    private Course currentCourse;
 
 
     @Override
@@ -48,18 +51,13 @@ public class MainActivity extends AppCompatActivity {
         this.arrayOfCourses = dbHandler.getCourses();
         ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<Course>(this,
                 android.R.layout.simple_spinner_item, arrayOfCourses);
-
-
         this.courseSpinner = (Spinner) findViewById(R.id.courseSpinner);
         this.courseSpinner.setAdapter(spinnerAdapter);
-
         // Create student list
         Course course = (Course) courseSpinner.getSelectedItem();
-
         this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
         final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudents);
-
         final ListView studentListView = (ListView) findViewById(R.id.listView);
         studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,14 +68,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         studentListView.setAdapter(adapter);
-
-
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println("got here");
                 MainActivity.this.arrayOfStudents.clear();
                 MainActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getClassID());
+                MainActivity.this.currentCourse = arrayOfCourses.get(position);
                 for (Student student : MainActivity.this.arrayOfStudents) {
                     System.out.println(student.toString());
                 }
@@ -88,26 +85,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                return;
             }
         });
-
-
         this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
-
-
-
-
-
-
-
-
-
-
         dateView = (TextView) findViewById(R.id.dateTextView);
+        resultTextView = (TextView) findViewById(R.id.resultTextView);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
-
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         showDate(year, month+1, day);
@@ -163,7 +148,19 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void showDate(int year, int month, int day) {
-        dateView.setText(new StringBuilder().append(month).append("/")
-                .append(day).append("/").append(year));
+        dateView.setText(new StringBuilder().append(month).append("-")
+                .append(day).append("-").append(year));
+    }
+
+    public void didTapSubmit(View view) {
+        //System.out.println(this.currentCourse + dateView.getText().toString());
+        if (!dbHandler.isDateForCourseEmpty(dateView.getText().toString())) {
+            resultTextView.setTextColor(Color.RED);
+            resultTextView.setText("Attendance already entered for this date");
+            return;
+        }
+        dbHandler.addAttendanceRecord(this.currentCourse, this.arrayOfStudents, dateView.getText().toString());
+        resultTextView.setTextColor(Color.GREEN);
+        resultTextView.setText("Submitted!!");
     }
 }

@@ -31,6 +31,13 @@ public class Student {
         return this.studentID;
     }
 
+    public int isPresent() {
+        if (this.isPresent) {
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public String toString() {
         if (this.isPresent == true) {
