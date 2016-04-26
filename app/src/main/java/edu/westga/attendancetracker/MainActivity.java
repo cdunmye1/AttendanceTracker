@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.dbHandler = new MyDBHandler(this, null, null, 1);
         this.arrayOfCourses = dbHandler.getCourses();
-        ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<Course>(this,
+        ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, arrayOfCourses);
         this.courseSpinner = (Spinner) findViewById(R.id.courseSpinner);
         this.courseSpinner.setAdapter(spinnerAdapter);
         // Create student list
         Course course = (Course) courseSpinner.getSelectedItem();
-        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
-        final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
+        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
+        final ArrayAdapter<Student> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudents);
         final ListView studentListView = (ListView) findViewById(R.id.listView);
         //studentListView.setScrollbarFadingEnabled(true);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //System.out.println("got here");
                 MainActivity.this.arrayOfStudents.clear();
-                MainActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getClassID());
+                MainActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getCourseID());
                 MainActivity.this.currentCourse = arrayOfCourses.get(position);
                 for (Student student : MainActivity.this.arrayOfStudents) {
                     System.out.println(student.toString());
@@ -86,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                return;
+
             }
         });
-        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getClassID());
+        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
         dateView = (TextView) findViewById(R.id.dateTextView);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
         calendar = Calendar.getInstance();
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void didTapSubmit(View view) {
         //System.out.println(this.currentCourse + dateView.getText().toString());
-        if (!dbHandler.isDateForCourseEmpty(currentCourse.getClassID(), dateView.getText().toString())) {
+        if (!dbHandler.isDateForCourseEmpty(currentCourse.getCourseID(), dateView.getText().toString())) {
             resultTextView.setTextColor(Color.RED);
             resultTextView.setText("Attendance already entered for this date");
             return;

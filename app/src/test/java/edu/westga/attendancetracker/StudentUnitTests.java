@@ -14,7 +14,7 @@ public class StudentUnitTests {
     @Test
     public void validateGetNameMethod() {
         Student student = new Student(1, "Chris");
-        assertEquals(student.getName(), "Chris");
+        assertEquals("Chris", student.getName());
     }
 
     @Test

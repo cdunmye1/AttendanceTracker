@@ -3,7 +3,7 @@ package edu.westga.attendancetracker.model;
 import java.util.ArrayList;
 
 /**
- * Created by Chris on 4/20/2016.
+ * The Course class which will keep track of students in a course
  */
 public class Course {
 
@@ -24,7 +24,7 @@ public class Course {
         this.students = students;
     }
 
-    public int getClassID() {
+    public int getCourseID() {
         return this.courseID;
     }
     public String getName() { return this.name; }

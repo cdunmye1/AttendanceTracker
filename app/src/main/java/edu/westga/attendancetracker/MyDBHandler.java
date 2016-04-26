@@ -72,7 +72,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
-        ArrayList<Student> studentList = new ArrayList<Student>();
+        ArrayList<Student> studentList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             int studentID = Integer.parseInt(cursor.getString(0));
             String name = cursor.getString(1);
@@ -89,7 +89,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
-        ArrayList<Course> courseList = new ArrayList<Course>();
+        ArrayList<Course> courseList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             int courseID = Integer.parseInt(cursor.getString(0));
             String name = cursor.getString(1);
@@ -101,7 +101,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     private void addRecords(SQLiteDatabase db) {
-        final ArrayList<Student> arrayOfUsers = new ArrayList<Student>();
+        final ArrayList<Student> arrayOfUsers = new ArrayList<>();
         arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
         arrayOfUsers.add(new Student(2, "Bill Donovan"));
         arrayOfUsers.add(new Student(3, "Henry Williams"));
@@ -170,7 +170,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         for (Student student: students) {
             ContentValues values = new ContentValues();
             values.put("StudentID", student.getStudentID());
-            values.put("CourseID", course.getClassID());
+            values.put("CourseID", course.getCourseID());
             values.put("Date", date);
             values.put("Present", student.isPresent());
             SQLiteDatabase db = this.getWritableDatabase();
