@@ -25,6 +25,7 @@
             android:layout_gravity="center_horizontal" />
 
         <ListView
+            android:fadeScrollbars="false"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:id="@+id/listView"

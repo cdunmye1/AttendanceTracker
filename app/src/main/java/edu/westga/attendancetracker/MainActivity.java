@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         final ArrayAdapter<Student> adapter = new ArrayAdapter<Student>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudents);
         final ListView studentListView = (ListView) findViewById(R.id.listView);
+        //studentListView.setScrollbarFadingEnabled(true);
         studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("got here");
+                //System.out.println("got here");
                 MainActivity.this.arrayOfStudents.clear();
                 MainActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getClassID());
                 MainActivity.this.currentCourse = arrayOfCourses.get(position);
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void didTapSubmit(View view) {
         //System.out.println(this.currentCourse + dateView.getText().toString());
-        if (!dbHandler.isDateForCourseEmpty(dateView.getText().toString())) {
+        if (!dbHandler.isDateForCourseEmpty(currentCourse.getClassID(), dateView.getText().toString())) {
             resultTextView.setTextColor(Color.RED);
             resultTextView.setText("Attendance already entered for this date");
             return;

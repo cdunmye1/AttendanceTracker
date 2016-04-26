@@ -148,11 +148,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-02-2016, 0); ");
     }
 
-    public boolean isDateForCourseEmpty(String date) {
+    public boolean isDateForCourseEmpty(int courseID, String date) {
             boolean retValue = true;
-            String query = "Select * FROM StudentAttendance " +
+            String query = "Select CourseID FROM StudentAttendance " +
                     " WHERE " +
-                    "Date=\"" + date + "\";";
+                    "Date=\"" + date + "\" AND CourseID=" + courseID + " LIMIT 1;";
 
             SQLiteDatabase db = this.getWritableDatabase();
 
