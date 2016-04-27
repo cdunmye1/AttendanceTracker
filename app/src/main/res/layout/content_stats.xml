@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Attendance Rate for each Class:"
+            android:text="Attendance Rate by Class:"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal" />
 
@@ -29,8 +29,29 @@
             android:layout_width="match_parent"
             android:fadeScrollbars="false"
             android:layout_height="100dp"
-            android:id="@+id/listView"
-            android:layout_weight="0.29" />
+            android:id="@+id/studentsByCourseListView"
+            android:layout_weight="0.20" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Attendance Rate by Student:"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:layout_gravity="center_horizontal" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="13dp"
+            android:id="@+id/listView2"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.66" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
