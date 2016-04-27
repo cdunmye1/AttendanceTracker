@@ -41,7 +41,7 @@ public class Student {
     @Override
     public String toString() {
         if (this.isPresent == true) {
-            return this.name + " (Present)";
+            return this.name;
         }
         return "(Absent) - " + this.name;
     }

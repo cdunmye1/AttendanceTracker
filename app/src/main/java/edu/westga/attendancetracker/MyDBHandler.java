@@ -64,10 +64,45 @@ public class MyDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<Student> getStudentsFromCourse(int CourseID) {
+    public ArrayList<Student> getStudentsFromCourse(int courseID) {
         String query = "Select s._id, s.name FROM StudentCourse sc " +
                 "JOIN Students s on s._id=sc.StudentID WHERE " +
-                "CourseID=" + CourseID;
+                "CourseID=" + courseID + " ORDER BY s.name ASC;";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Student> studentList = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int studentID = Integer.parseInt(cursor.getString(0));
+            String name = cursor.getString(1);
+            studentList.add(new Student(studentID, name));
+        }
+
+        db.close();
+        return studentList;
+    }
+
+    public ArrayList<Course> getCoursesFromStudent(int studentID) {
+        String query = "Select c._id, c.name FROM StudentCourse sc JOIN Course c on c._id=sc.CourseID" +
+                " WHERE StudentID=" + studentID + " ORDER BY c.name ASC;";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Course> courseList = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int courseID = Integer.parseInt(cursor.getString(0));
+            String name = cursor.getString(1);
+            courseList.add(new Course(courseID, name));
+        }
+
+        db.close();
+        return courseList;
+    }
+
+    public ArrayList<Student> getStudents() {
+        String query = "Select s._id, s.name FROM Students s ORDER BY s.name ASC;";
 
         SQLiteDatabase db = this.getWritableDatabase();
 

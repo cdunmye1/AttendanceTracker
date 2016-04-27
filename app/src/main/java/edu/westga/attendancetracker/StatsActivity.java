@@ -1,95 +1,59 @@
 package edu.westga.attendancetracker;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-
 import edu.westga.attendancetracker.model.Course;
 import edu.westga.attendancetracker.model.Student;
 
+/**
+ * This class keeps track of the attendance record for students and courses
+ */
 public class StatsActivity extends AppCompatActivity {
 
-    private TextView resultTextView;
     private Spinner courseSpinner;
     private ArrayList<String> arrayOfStudentsPerCourse;
     private ArrayList<Course> arrayOfCourses;
-    private ListView studentByCourseListView;
+    private ArrayList<String> arrayOfCoursesPerStudent;
+    private ArrayList<Student> arrayOfStudents;
+    private ListView courseByStudentListView;
+    private Spinner studentSpinner;
     private MyDBHandler dbHandler;
-    private Course currentCourse;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
         this.dbHandler = new MyDBHandler(this, null, null, 1);
+        // set up course spinner and student listview
         this.arrayOfCourses = dbHandler.getCourses();
         ArrayAdapter<Course> courseSpinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, arrayOfCourses);
         this.courseSpinner = (Spinner) findViewById(R.id.courseSpinner);
         this.courseSpinner.setAdapter(courseSpinnerAdapter);
-        // Create student list
         Course course = (Course) courseSpinner.getSelectedItem();
         this.arrayOfStudentsPerCourse = new ArrayList<String>();
-        for (Student student: dbHandler.getStudentsFromCourse(course.getCourseID())) {
-            double studentAttendance = dbHandler.getStudentAttendanceRecordForCourse(course.getCourseID(), student.getStudentID());
-            this.arrayOfStudentsPerCourse.add(student.getName() + " " + studentAttendance);
-        }
-        //this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        final ArrayAdapter<String> studentsByCourseAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudentsPerCourse);
         final ListView studentListView = (ListView) findViewById(R.id.studentsByCourseListView);
-//        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                System.out.println(position);
-//                //StatsActivity.this.arrayOfStudents.get(position).toggleIsPresent();
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-        studentListView.setAdapter(adapter);
+        studentListView.setAdapter(studentsByCourseAdapter);
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StatsActivity.this.arrayOfStudentsPerCourse.clear();
                 int courseID = arrayOfCourses.get(position).getCourseID();
-                //StatsActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(courseID);
                 for (Student student: dbHandler.getStudentsFromCourse(courseID)) {
                     String studentAttendance = String.format("%.2f", dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
-                    StatsActivity.this.arrayOfStudentsPerCourse.add(student.getName() + " " + studentAttendance + "%");
-                    //System.out.println(student.getName() + " " + studentAttendance);
+                    StatsActivity.this.arrayOfStudentsPerCourse.add(student.getName() + " - " + studentAttendance + "%");
                 }
-
-                StatsActivity.this.currentCourse = arrayOfCourses.get(position);
-                //for (Student student : StatsActivity.this.arrayOfStudents) {
-                //    System.out.println(student.getName() + dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
-                //}
-                //adapter.clear();
-                //adapter.addAll(StatsActivity.this.arrayOfStudents);
-                adapter.notifyDataSetChanged();
-                for (String studentString: StatsActivity.this.arrayOfStudentsPerCourse) {
-                    System.out.println(studentString);
-                }
+                studentsByCourseAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -97,8 +61,36 @@ public class StatsActivity extends AppCompatActivity {
 
             }
         });
-        //this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
-        resultTextView = (TextView) findViewById(R.id.resultTextView);
+
+        // set up student spinner and course listview
+        this.arrayOfStudents = dbHandler.getStudents();
+        ArrayAdapter<Student> studentSpinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, arrayOfStudents);
+        this.studentSpinner = (Spinner) findViewById(R.id.studentSpinner);
+        this.studentSpinner.setAdapter(studentSpinnerAdapter);
+        Student student = (Student) studentSpinner.getSelectedItem();
+        this.arrayOfCoursesPerStudent = new ArrayList<String>();
+        final ArrayAdapter<String> coursesByStudentAdatper = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, this.arrayOfCoursesPerStudent);
+        final ListView courseListView = (ListView) findViewById(R.id.coursesByStudentListView);
+        courseListView.setAdapter(coursesByStudentAdatper);
+        studentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                StatsActivity.this.arrayOfCoursesPerStudent.clear();
+                int studentID = arrayOfStudents.get(position).getStudentID();
+                for (Course course: dbHandler.getCoursesFromStudent(studentID)) {
+                    String courseAttendance = String.format("%.2f", dbHandler.getStudentAttendanceRecordForCourse(course.getCourseID(), studentID));
+                    StatsActivity.this.arrayOfCoursesPerStudent.add(course.getName() + " - " + courseAttendance + "%");
+                }
+                coursesByStudentAdatper.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -106,5 +98,4 @@ public class StatsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 }

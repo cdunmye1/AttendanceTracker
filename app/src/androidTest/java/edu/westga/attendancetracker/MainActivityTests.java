@@ -71,7 +71,7 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
             e.printStackTrace();
         }
         ArrayList<Student> newStudentList = activity.getArrayOfStudents();
-        assertEquals("(Absent) - Bill Donovan", newStudentList.get(1).toString());
+        assertEquals("(Absent) - Chad Smith", newStudentList.get(1).toString());
     }
 
     public void testSubmittingRecordsTwiceShowsErrorMessage() {

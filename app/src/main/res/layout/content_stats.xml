@@ -43,13 +43,13 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner"
+            android:id="@+id/studentSpinner"
             android:layout_gravity="center_horizontal" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="13dp"
-            android:id="@+id/listView2"
+            android:id="@+id/coursesByStudentListView"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.66" />
 
