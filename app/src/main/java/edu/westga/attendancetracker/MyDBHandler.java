@@ -126,13 +126,16 @@ public class MyDBHandler extends SQLiteOpenHelper {
         double percentageAttended = 0.0;
         double totalRecords = totalCursor.getCount();
         double totalAttended = attendedCursor.getCount();
-        percentageAttended = 1.0 * (totalAttended / totalRecords);
+        if (totalAttended == 0.0) {
+            return 0;
+        }
+        percentageAttended = (totalAttended / totalRecords);
         percentageAttended = percentageAttended * 100;
-        System.out.println(totalQuery);
-        System.out.println(attendedQuery);
-        System.out.println(totalRecords);
-        System.out.println(totalAttended);
-        System.out.println(percentageAttended);
+//        System.out.println(totalQuery);
+//        System.out.println(attendedQuery);
+//        System.out.println(totalRecords);
+//        System.out.println(totalAttended);
+//        System.out.println(percentageAttended);
         return percentageAttended;
     }
 

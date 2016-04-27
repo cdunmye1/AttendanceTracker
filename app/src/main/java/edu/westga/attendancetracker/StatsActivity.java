@@ -31,7 +31,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private TextView resultTextView;
     private Spinner courseSpinner;
-    private ArrayList<Student> arrayOfStudents;
+    private ArrayList<String> arrayOfStudents;
     private ArrayList<Course> arrayOfCourses;
     private ListView studentListView;
     private MyDBHandler dbHandler;
@@ -50,34 +50,46 @@ public class StatsActivity extends AppCompatActivity {
         this.courseSpinner.setAdapter(spinnerAdapter);
         // Create student list
         Course course = (Course) courseSpinner.getSelectedItem();
-        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
-        final ArrayAdapter<Student> adapter = new ArrayAdapter<>(this,
+        this.arrayOfStudents = new ArrayList<String>();
+        for (Student student: dbHandler.getStudentsFromCourse(course.getCourseID())) {
+            double studentAttendance = dbHandler.getStudentAttendanceRecordForCourse(course.getCourseID(), student.getStudentID());
+            this.arrayOfStudents.add(student.getName() + " " + studentAttendance);
+        }
+        //this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudents);
         final ListView studentListView = (ListView) findViewById(R.id.listView);
-        //studentListView.setScrollbarFadingEnabled(true);
-//        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                System.out.println(position);
-//                StatsActivity.this.arrayOfStudents.get(position).toggleIsPresent();
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
+        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println(position);
+                //StatsActivity.this.arrayOfStudents.get(position).toggleIsPresent();
+                adapter.notifyDataSetChanged();
+            }
+        });
         studentListView.setAdapter(adapter);
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //System.out.println("got here");
                 StatsActivity.this.arrayOfStudents.clear();
                 int courseID = arrayOfCourses.get(position).getCourseID();
-                StatsActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(courseID);
-                StatsActivity.this.currentCourse = arrayOfCourses.get(position);
-                for (Student student : StatsActivity.this.arrayOfStudents) {
-                    System.out.println(student.getName() + dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
+                //StatsActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(courseID);
+                for (Student student: dbHandler.getStudentsFromCourse(courseID)) {
+                    String studentAttendance = String.format("%.2f", dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
+                    StatsActivity.this.arrayOfStudents.add(student.getName() + " " + studentAttendance + "%");
+                    //System.out.println(student.getName() + " " + studentAttendance);
                 }
-                adapter.clear();
-                adapter.addAll(StatsActivity.this.arrayOfStudents);
+
+                StatsActivity.this.currentCourse = arrayOfCourses.get(position);
+                //for (Student student : StatsActivity.this.arrayOfStudents) {
+                //    System.out.println(student.getName() + dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
+                //}
+                //adapter.clear();
+                //adapter.addAll(StatsActivity.this.arrayOfStudents);
                 adapter.notifyDataSetChanged();
+                for (String studentString: StatsActivity.this.arrayOfStudents) {
+                    System.out.println(studentString);
+                }
             }
 
             @Override
@@ -85,7 +97,7 @@ public class StatsActivity extends AppCompatActivity {
 
             }
         });
-        this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
+        //this.arrayOfStudents = dbHandler.getStudentsFromCourse(course.getCourseID());
         resultTextView = (TextView) findViewById(R.id.resultTextView);
     }
 

@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="View Statistics for each Class:"
+            android:text="Attendance Rate for each Class:"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal" />
 
@@ -26,11 +26,11 @@
             android:nestedScrollingEnabled="false" />
 
         <ListView
-            android:fadeScrollbars="false"
             android:layout_width="match_parent"
+            android:fadeScrollbars="false"
             android:layout_height="100dp"
             android:id="@+id/listView"
-            android:layout_weight="0.38" />
+            android:layout_weight="0.29" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
