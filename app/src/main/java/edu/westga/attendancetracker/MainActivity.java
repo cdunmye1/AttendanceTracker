@@ -162,6 +162,14 @@ public class MainActivity extends AppCompatActivity {
         }
         dbHandler.addAttendanceRecord(this.currentCourse, this.arrayOfStudents, dateView.getText().toString());
         resultTextView.setTextColor(Color.GREEN);
-        resultTextView.setText("Submitted!!");
+        resultTextView.setText("Submitted!");
+    }
+
+    public ArrayList<Student> getArrayOfStudents() {
+        return this.arrayOfStudents;
+    }
+
+    public void cleanDatabaseRecords() {
+        dbHandler.deleteRecords();
     }
 }

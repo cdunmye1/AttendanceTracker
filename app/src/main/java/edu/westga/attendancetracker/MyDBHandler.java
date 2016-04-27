@@ -179,6 +179,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteRecords() {
+        String query = "Delete from StudentAttendance;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        db.close();
+    }
+
 //    public void updateProduct(Product product) {
 //        ContentValues values = new ContentValues();
 //        values.put(COLUMN_PRODUCTNAME, product.getProductName());

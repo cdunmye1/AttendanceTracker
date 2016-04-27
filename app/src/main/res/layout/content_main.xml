@@ -49,7 +49,7 @@
             android:layout_width="114dp"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:id="@+id/button"
+            android:id="@+id/submitButton"
             android:layout_gravity="right"
             android:onClick="didTapSubmit" />
 
