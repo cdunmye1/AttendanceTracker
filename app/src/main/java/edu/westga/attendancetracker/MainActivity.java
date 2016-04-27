@@ -2,6 +2,7 @@ package edu.westga.attendancetracker;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -163,6 +164,11 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.addAttendanceRecord(this.currentCourse, this.arrayOfStudents, dateView.getText().toString());
         resultTextView.setTextColor(Color.GREEN);
         resultTextView.setText("Submitted!");
+    }
+
+    public void didTapViewStats(View view) {
+        Intent intent = new Intent(this, StatsActivity.class);
+        startActivity(intent);
     }
 
     public ArrayList<Student> getArrayOfStudents() {

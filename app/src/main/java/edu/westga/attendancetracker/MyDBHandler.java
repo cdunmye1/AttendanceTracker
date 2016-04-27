@@ -100,6 +100,34 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return courseList;
     }
 
+    public ArrayList<Course> getCoursesWithAttendencePercentage() {
+        ArrayList<Course> courseList = getCourses();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Course course: courseList) {
+            Cursor totalCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + ";", null);
+            Cursor attendedCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + " AND Present=1;", null);
+            double percentageAttended = 0.0;
+            int totalRecords = totalCursor.getCount();
+            int totalAttended = attendedCursor.getCount();
+            percentageAttended = (totalAttended / totalRecords) * 100;
+            course.setAttendancePercentage(percentageAttended);
+        }
+        db.close();
+        return courseList;
+    }
+
+    public double getStudentAttendanceRecordForCourse(int courseID, int studentID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor totalCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND StudentID=" + studentID + ";", null);
+        Cursor attendedCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND StudentID=" + studentID + " AND Present=1;", null);
+        double percentageAttended = 0.0;
+        int totalRecords = totalCursor.getCount();
+        int totalAttended = attendedCursor.getCount();
+        percentageAttended = (totalAttended / totalRecords) * 100;
+        return percentageAttended;
+    }
+
     private void addRecords(SQLiteDatabase db) {
         final ArrayList<Student> arrayOfUsers = new ArrayList<>();
         arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
@@ -185,64 +213,4 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         db.close();
     }
-
-//    public void updateProduct(Product product) {
-//        ContentValues values = new ContentValues();
-//        values.put(COLUMN_PRODUCTNAME, product.getProductName());
-//        values.put(COLUMN_QUANTITY, product.getQuantity());
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        db.update(TABLE_PRODUCTS, values, COLUMN_ID + "=" + product.getID(), null);
-//        db.close();
-//    }
-
-//    public Product findProduct(String productname) {
-//        String query = "Select * FROM " + TABLE_PRODUCTS + " WHERE " + COLUMN_PRODUCTNAME + " =  \"" + productname + "\"";
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        Cursor cursor = db.rawQuery(query, null);
-//
-//        Product product = new Product();
-//
-//        if (cursor.moveToFirst()) {
-//            cursor.moveToFirst();
-//            product.setID(Integer.parseInt(cursor.getString(0)));
-//            product.setProductName(cursor.getString(1));
-//            product.setQuantity(Integer.parseInt(cursor.getString(2)));
-//            cursor.close();
-//        } else {
-//            product = null;
-//        }
-//        db.close();
-//        return product;
-//    }
-
-//    public boolean deleteProduct(String productname) {
-//
-//        boolean result = false;
-//
-//        String query = "Select * FROM " + TABLE_PRODUCTS + " WHERE " + COLUMN_PRODUCTNAME + " =  \"" + productname + "\"";
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        Cursor cursor = db.rawQuery(query, null);
-//
-//        Product product = new Product();
-//
-//        if (cursor.moveToFirst()) {
-//            product.setID(Integer.parseInt(cursor.getString(0)));
-//            db.delete(TABLE_PRODUCTS, COLUMN_ID + " = ?",
-//                    new String[] { String.valueOf(product.getID()) });
-//            cursor.close();
-//            result = true;
-//        }
-//        db.close();
-//        return result;
-//    }
-
-//    public void deleteAllProducts() {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        db.delete(TABLE_PRODUCTS, null, null);
-//        db.close();
-//    }
 }

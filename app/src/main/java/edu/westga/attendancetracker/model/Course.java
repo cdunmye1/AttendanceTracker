@@ -10,6 +10,7 @@ public class Course {
     private String name;
     private int courseID;
     private ArrayList<Student> students;
+    private double attendancePercentage;
 
     public Course(int courseID, String name) {
         this.courseID = courseID;
@@ -21,6 +22,9 @@ public class Course {
     }
 
     public void setStudents(ArrayList<Student> students) {
+        if (students == null) {
+            throw new IllegalArgumentException("students cannot be null");
+        }
         this.students = students;
     }
 
@@ -28,6 +32,14 @@ public class Course {
         return this.courseID;
     }
     public String getName() { return this.name; }
+
+    public void setAttendancePercentage(double percentage) {
+        this.attendancePercentage = percentage;
+    }
+
+    public double getAttendancePercentage() {
+        return this.attendancePercentage;
+    }
 
     @Override
     public String toString() {
