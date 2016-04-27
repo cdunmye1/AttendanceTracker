@@ -30,7 +30,6 @@ import edu.westga.attendancetracker.model.Student;
 public class StatsActivity extends AppCompatActivity {
 
     private TextView resultTextView;
-    private int year, month, day;
     private Spinner courseSpinner;
     private ArrayList<Student> arrayOfStudents;
     private ArrayList<Course> arrayOfCourses;
@@ -56,24 +55,25 @@ public class StatsActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, this.arrayOfStudents);
         final ListView studentListView = (ListView) findViewById(R.id.listView);
         //studentListView.setScrollbarFadingEnabled(true);
-        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(position);
-                StatsActivity.this.arrayOfStudents.get(position).toggleIsPresent();
-                adapter.notifyDataSetChanged();
-            }
-        });
+//        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                System.out.println(position);
+//                StatsActivity.this.arrayOfStudents.get(position).toggleIsPresent();
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
         studentListView.setAdapter(adapter);
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //System.out.println("got here");
                 StatsActivity.this.arrayOfStudents.clear();
-                StatsActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(arrayOfCourses.get(position).getCourseID());
+                int courseID = arrayOfCourses.get(position).getCourseID();
+                StatsActivity.this.arrayOfStudents = dbHandler.getStudentsFromCourse(courseID);
                 StatsActivity.this.currentCourse = arrayOfCourses.get(position);
                 for (Student student : StatsActivity.this.arrayOfStudents) {
-                    System.out.println(student.toString());
+                    System.out.println(student.getName() + dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
                 }
                 adapter.clear();
                 adapter.addAll(StatsActivity.this.arrayOfStudents);
