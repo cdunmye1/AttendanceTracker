@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -35,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Student> arrayOfStudents;
     private ArrayList<Course> arrayOfCourses;
     private ListView studentListView;
-    private MyDBHandler dbHandler;
+    private AttendanceTrackDBHandler dbHandler;
     private Course currentCourse;
 
 
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.dbHandler = new MyDBHandler(this, null, null, 1);
+        this.dbHandler = new AttendanceTrackDBHandler(this, null, null, 1);
         // set up course spinner and student list view
         this.arrayOfCourses = dbHandler.getCourses();
         ArrayAdapter<Course> spinnerAdapter = new ArrayAdapter<>(this,

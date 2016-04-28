@@ -1,16 +1,9 @@
 package edu.westga.attendancetracker;
 
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-
-import edu.westga.attendancetracker.model.Student;
 
 /**
  * Validating StatsActivy works correctly.  Note: This relies on the default test data.
@@ -24,7 +17,7 @@ public class StatsActivityTests extends ActivityInstrumentationTestCase2<StatsAc
     public void setUp() {
         // Delete database
         StatsActivity activity = getActivity();
-        MyDBHandler dbHandler = new MyDBHandler(activity, null, null, 1);
+        AttendanceTrackDBHandler dbHandler = new AttendanceTrackDBHandler(activity, null, null, 1);
         dbHandler.deleteRecords();
 
         // Insert StudentAttendance Data
@@ -36,7 +29,7 @@ public class StatsActivityTests extends ActivityInstrumentationTestCase2<StatsAc
         assertNotNull(activity);
     }
 
-    public void testStudentListPopulatesWhenCourseSpinnerChanges() {
+    public void testStudentListRePopulatesWhenCourseSpinnerChanges() {
         final StatsActivity activity = getActivity();
         final ListView list = (ListView) activity.findViewById(R.id.listView);
         getInstrumentation().runOnMainSync(new Runnable() {
@@ -89,7 +82,7 @@ public class StatsActivityTests extends ActivityInstrumentationTestCase2<StatsAc
 
     public void testAllCoursesCombinedPercentageShowsUpForStudent() {
         final StatsActivity activity = getActivity();
-        assertEquals("All Courses - 83.33%", activity.getArrayOfCoursesPerStudent().get(0));
+        assertEquals("All Courses: 83.33%", activity.getArrayOfCoursesPerStudent().get(0));
     }
 
     // By default Bill Donovan will be shown
@@ -98,6 +91,4 @@ public class StatsActivityTests extends ActivityInstrumentationTestCase2<StatsAc
         final StatsActivity activity = getActivity();
         assertEquals("Database Design 101 - 66.67%", activity.getArrayOfCoursesPerStudent().get(1));
     }
-
-
 }

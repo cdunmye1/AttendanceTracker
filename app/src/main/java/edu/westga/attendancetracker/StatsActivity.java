@@ -1,6 +1,5 @@
 package edu.westga.attendancetracker;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,13 +24,13 @@ public class StatsActivity extends AppCompatActivity {
     private ArrayList<Student> arrayOfStudents;
     private ListView courseByStudentListView;
     private Spinner studentSpinner;
-    private MyDBHandler dbHandler;
+    private AttendanceTrackDBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
-        this.dbHandler = new MyDBHandler(this, null, null, 1);
+        this.dbHandler = new AttendanceTrackDBHandler(this, null, null, 1);
         // set up course spinner and student listview
         this.arrayOfCourses = dbHandler.getCourses();
         ArrayAdapter<Course> courseSpinnerAdapter = new ArrayAdapter<>(this,
@@ -39,7 +38,7 @@ public class StatsActivity extends AppCompatActivity {
         this.courseSpinner = (Spinner) findViewById(R.id.courseSpinner);
         this.courseSpinner.setAdapter(courseSpinnerAdapter);
         Course course = (Course) courseSpinner.getSelectedItem();
-        this.arrayOfStudentsPerCourse = new ArrayList<String>();
+        this.arrayOfStudentsPerCourse = new ArrayList<>();
         final ArrayAdapter<String> studentsByCourseAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfStudentsPerCourse);
         final ListView studentListView = (ListView) findViewById(R.id.studentsByCourseListView);
@@ -70,7 +69,7 @@ public class StatsActivity extends AppCompatActivity {
         this.studentSpinner = (Spinner) findViewById(R.id.studentSpinner);
         this.studentSpinner.setAdapter(studentSpinnerAdapter);
         Student student = (Student) studentSpinner.getSelectedItem();
-        this.arrayOfCoursesPerStudent = new ArrayList<String>();
+        this.arrayOfCoursesPerStudent = new ArrayList<>();
         final ArrayAdapter<String> coursesByStudentAdatper = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, this.arrayOfCoursesPerStudent);
         final ListView courseListView = (ListView) findViewById(R.id.coursesByStudentListView);

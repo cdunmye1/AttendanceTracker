@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import edu.westga.attendancetracker.model.Course;
 import edu.westga.attendancetracker.model.Student;
 
-public class MyDBHandler extends SQLiteOpenHelper {
+/**
+ * AttendanceTrackDBHandler class performs database tasks in the AttendanceTracker application
+ */
+public class AttendanceTrackDBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "studentAttendanceDB.db";
@@ -17,7 +20,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String STUDENT_COLUMN_ID = "_id";
     public static final String STUDENT_COLUMN_NAME = "name";
 
-    public MyDBHandler(Context context, String name,
+    public AttendanceTrackDBHandler(Context context, String name,
                        SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
@@ -117,29 +120,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return courseList;
     }
 
-//    public ArrayList<Course> getCoursesWithAttendencePercentage() {
-//        ArrayList<Course> courseList = getCourses();
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        for (Course course: courseList) {
-//            Cursor totalCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + ";", null);
-//            Cursor attendedCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + " AND Present=1;", null);
-//            double percentageAttended = 0.0;
-//            int totalRecords = totalCursor.getCount();
-//            int totalAttended = attendedCursor.getCount();
-//            percentageAttended = (totalAttended / totalRecords) * 100;
-//            course.setAttendancePercentage(percentageAttended);
-//        }
-//        db.close();
-//        return courseList;
-//    }
-
     public double getStudentAttendanceRecordForCourse(int courseID, int studentID) {
         SQLiteDatabase db = this.getWritableDatabase();
         String totalQuery = "Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND StudentID=" + studentID + ";";
         String attendedQuery = "Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND StudentID=" + studentID + " AND Present=1;";
         Cursor totalCursor = db.rawQuery(totalQuery, null);
         Cursor attendedCursor = db.rawQuery(attendedQuery, null);
-        double percentageAttended = 0.0;
+        double percentageAttended;
         double totalRecords = totalCursor.getCount();
         double totalAttended = attendedCursor.getCount();
         if (totalAttended == 0.0) {
@@ -156,7 +143,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String attendedQuery = "Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND Present=1;";
         Cursor totalCursor = db.rawQuery(totalQuery, null);
         Cursor attendedCursor = db.rawQuery(attendedQuery, null);
-        double percentageAttended = 0.0;
+        double percentageAttended;
         double totalRecords = totalCursor.getCount();
         double totalAttended = attendedCursor.getCount();
         if (totalAttended == 0.0) {
@@ -173,7 +160,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String attendedQuery = "Select CourseID from StudentAttendance WHERE StudentID=" + studentID + " AND Present=1;";
         Cursor totalCursor = db.rawQuery(totalQuery, null);
         Cursor attendedCursor = db.rawQuery(attendedQuery, null);
-        double percentageAttended = 0.0;
+        double percentageAttended;
         double totalRecords = totalCursor.getCount();
         double totalAttended = attendedCursor.getCount();
         if (totalAttended == 0.0) {
@@ -181,11 +168,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
         percentageAttended = (totalAttended / totalRecords);
         percentageAttended = percentageAttended * 100;
-        System.out.println(totalRecords);
-        System.out.println(totalAttended);
-        System.out.println(percentageAttended);
-        System.out.println(percentageAttended);
-
         return percentageAttended;
     }
 
@@ -196,7 +178,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         arrayOfUsers.add(new Student(2, "Bill Donovan"));
         arrayOfUsers.add(new Student(3, "Henry Williams"));
         arrayOfUsers.add(new Student(4, "Chad Smith"));
-        arrayOfUsers.add(new Student(5, "List Saunders"));
         arrayOfUsers.add(new Student(6, "Kaitlyn Carlisle"));
         arrayOfUsers.add(new Student(7, "Carly Snyder"));
         arrayOfUsers.add(new Student(8, "Mark Jackson"));

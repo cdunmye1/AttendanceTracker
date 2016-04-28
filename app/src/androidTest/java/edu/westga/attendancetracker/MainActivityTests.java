@@ -1,9 +1,7 @@
 package edu.westga.attendancetracker;
 
-import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -24,7 +22,7 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
     @Override
     public void setUp() {
         MainActivity activity = getActivity();
-        MyDBHandler dbHandler = new MyDBHandler(activity, null, null, 1);
+        AttendanceTrackDBHandler dbHandler = new AttendanceTrackDBHandler(activity, null, null, 1);
         dbHandler.deleteRecords();
     }
 
@@ -52,7 +50,7 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
         Spinner spinner = (Spinner) activity.findViewById(R.id.courseSpinner);
         TouchUtils.tapView(this, spinner);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -82,15 +80,15 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
     public void testSubmittingRecordsOnceShowsSuccessMessage() {
         this.setUp();
         final MainActivity activity = getActivity();
-        TouchUtils.clickView(this, (Button) activity.findViewById(R.id.submitButton));
+        TouchUtils.clickView(this, activity.findViewById(R.id.submitButton));
         TextView resultsTextView = (TextView) activity.findViewById(R.id.resultTextView);
         assertEquals("Submitted!", resultsTextView.getText().toString());
     }
 
     public void testSubmittingRecordsTwiceShowsErrorMessage() {
         final MainActivity activity = getActivity();
-        TouchUtils.clickView(this, (Button) activity.findViewById(R.id.submitButton));
-        TouchUtils.clickView(this, (Button) activity.findViewById(R.id.submitButton));
+        TouchUtils.clickView(this, activity.findViewById(R.id.submitButton));
+        TouchUtils.clickView(this, activity.findViewById(R.id.submitButton));
         TextView resultsTextView = (TextView) activity.findViewById(R.id.resultTextView);
         assertEquals("Attendance already entered for this date", resultsTextView.getText().toString());
     }
