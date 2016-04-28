@@ -49,8 +49,8 @@ public class AttendanceTrackDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_ATTENDANCE_TABLE);
-        addStudentAndCourseRecords();
-        addStudentAttendanceRecords();
+        addStudentAndCourseRecords(db);
+        addStudentAttendanceRecords(db);
     }
 
     @Override
@@ -171,6 +171,38 @@ public class AttendanceTrackDBHandler extends SQLiteOpenHelper {
         return percentageAttended;
     }
 
+    private void addStudentAndCourseRecords(SQLiteDatabase db) {
+        final ArrayList<Student> arrayOfUsers = new ArrayList<>();
+        arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
+        arrayOfUsers.add(new Student(2, "Bill Donovan"));
+        arrayOfUsers.add(new Student(3, "Henry Williams"));
+        arrayOfUsers.add(new Student(4, "Chad Smith"));
+        arrayOfUsers.add(new Student(6, "Kaitlyn Carlisle"));
+        arrayOfUsers.add(new Student(7, "Carly Snyder"));
+        arrayOfUsers.add(new Student(8, "Mark Jackson"));
+        arrayOfUsers.add(new Student(9, "Steven Robinson"));
+        for (Student student: arrayOfUsers)
+        {
+            String INSERT_STUDENT_DATA = "INSERT INTO "+ TABLE_STUDENTS + " (_id, name) VALUES (" + student.getStudentID() + ", '" + student.getName() +"')";
+            db.execSQL(INSERT_STUDENT_DATA);
+        }
+
+        db.execSQL("INSERT INTO Course (_id, name) VALUES (1, 'Software Development 101'); ");
+        db.execSQL("INSERT INTO Course (_id, name) VALUES (2, 'Database Design 101'); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (1, 1); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (2, 1); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (3, 1); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (4, 1); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (5, 1); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (6, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (7, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (8, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (9, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (1, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (2, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (3, 2); ");
+    }
+
     private void addStudentAndCourseRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
         final ArrayList<Student> arrayOfUsers = new ArrayList<>();
@@ -206,6 +238,51 @@ public class AttendanceTrackDBHandler extends SQLiteOpenHelper {
 
     public void addStudentAttendanceRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Student attendence Day 1 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-02-2016, 1); ");
+        // Student attendence Day 1 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-02-2016, 0); ");
+        // Student attendence Day 2 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-03-2016, 1); ");
+        // Student attendence Day 2 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-03-2016, 0); ");
+        // Student attendence Day 3 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-04-2016, 1); ");
+        // Student attendence Day 3 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-04-2016, 1); ");
+    }
+
+    public void addStudentAttendanceRecords(SQLiteDatabase db) {
         // Student attendence Day 1 Class 1
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-02-2016, 0); ");
         db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-02-2016, 1); ");
