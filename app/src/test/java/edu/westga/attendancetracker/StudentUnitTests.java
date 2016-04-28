@@ -39,7 +39,7 @@ public class StudentUnitTests {
     @Test
      public void validateToStringWhenPresent() {
         Student student = new Student(1, "Chris");
-        assertEquals("Chris (Present)", student.toString());
+        assertEquals("Chris", student.toString());
     }
 
     @Test
