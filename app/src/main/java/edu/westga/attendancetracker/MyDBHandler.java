@@ -5,10 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-
 import java.util.ArrayList;
-import java.util.Date;
-
 import edu.westga.attendancetracker.model.Course;
 import edu.westga.attendancetracker.model.Student;
 
@@ -17,15 +14,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "studentAttendanceDB.db";
     public static final String TABLE_STUDENTS = "Students";
-
     public static final String STUDENT_COLUMN_ID = "_id";
     public static final String STUDENT_COLUMN_NAME = "name";
 
     public MyDBHandler(Context context, String name,
                        SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
-        //calling it with null to create it in memory
-        //super(context, null, factory, DATABASE_VERSION);
     }
 
     @Override
@@ -48,13 +42,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 "StudentAttendance " + "("
                 + "StudentID" + " INTEGER," + " CourseID INTEGER"
                 + " INTEGER, Date TEXT, Present INTEGER, PRIMARY KEY (StudentID, CourseID, Date))";
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
         db.execSQL(CREATE_STUDENTS_TABLE);
         db.execSQL(CREATE_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_ATTENDANCE_TABLE);
-        addRecords(db);
+        addStudentAndCourseRecords(db);
+        addStudentAttendanceRecords();
     }
 
     @Override
@@ -68,9 +61,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String query = "Select s._id, s.name FROM StudentCourse sc " +
                 "JOIN Students s on s._id=sc.StudentID WHERE " +
                 "CourseID=" + courseID + " ORDER BY s.name ASC;";
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<Student> studentList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -78,7 +69,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String name = cursor.getString(1);
             studentList.add(new Student(studentID, name));
         }
-
         db.close();
         return studentList;
     }
@@ -86,9 +76,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public ArrayList<Course> getCoursesFromStudent(int studentID) {
         String query = "Select c._id, c.name FROM StudentCourse sc JOIN Course c on c._id=sc.CourseID" +
                 " WHERE StudentID=" + studentID + " ORDER BY c.name ASC;";
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<Course> courseList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -96,16 +84,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String name = cursor.getString(1);
             courseList.add(new Course(courseID, name));
         }
-
         db.close();
         return courseList;
     }
 
     public ArrayList<Student> getStudents() {
         String query = "Select s._id, s.name FROM Students s ORDER BY s.name ASC;";
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<Student> studentList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -113,16 +98,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String name = cursor.getString(1);
             studentList.add(new Student(studentID, name));
         }
-
         db.close();
         return studentList;
     }
 
     public ArrayList<Course> getCourses() {
         String query = "Select _id, name FROM Course; ";
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<Course> courseList = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -135,22 +117,21 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return courseList;
     }
 
-    public ArrayList<Course> getCoursesWithAttendencePercentage() {
-        ArrayList<Course> courseList = getCourses();
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        for (Course course: courseList) {
-            Cursor totalCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + ";", null);
-            Cursor attendedCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + " AND Present=1;", null);
-            double percentageAttended = 0.0;
-            int totalRecords = totalCursor.getCount();
-            int totalAttended = attendedCursor.getCount();
-            percentageAttended = (totalAttended / totalRecords) * 100;
-            course.setAttendancePercentage(percentageAttended);
-        }
-        db.close();
-        return courseList;
-    }
+//    public ArrayList<Course> getCoursesWithAttendencePercentage() {
+//        ArrayList<Course> courseList = getCourses();
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        for (Course course: courseList) {
+//            Cursor totalCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + ";", null);
+//            Cursor attendedCursor = db.rawQuery("Select CourseID from StudentAttendance WHERE CourseID=" + course.getCourseID() + " AND Present=1;", null);
+//            double percentageAttended = 0.0;
+//            int totalRecords = totalCursor.getCount();
+//            int totalAttended = attendedCursor.getCount();
+//            percentageAttended = (totalAttended / totalRecords) * 100;
+//            course.setAttendancePercentage(percentageAttended);
+//        }
+//        db.close();
+//        return courseList;
+//    }
 
     public double getStudentAttendanceRecordForCourse(int courseID, int studentID) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -166,15 +147,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
         percentageAttended = (totalAttended / totalRecords);
         percentageAttended = percentageAttended * 100;
-//        System.out.println(totalQuery);
-//        System.out.println(attendedQuery);
-//        System.out.println(totalRecords);
-//        System.out.println(totalAttended);
-//        System.out.println(percentageAttended);
         return percentageAttended;
     }
 
-    private void addRecords(SQLiteDatabase db) {
+    private void addStudentAndCourseRecords(SQLiteDatabase db) {
         final ArrayList<Student> arrayOfUsers = new ArrayList<>();
         arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
         arrayOfUsers.add(new Student(2, "Bill Donovan"));
@@ -191,14 +167,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             db.execSQL(INSERT_STUDENT_DATA);
         }
 
-        String insertClassData = "INSERT INTO Course (_id, name) VALUES (1, 'Software Development 101'); ";
-
-        String insertClassStudentData = "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-02-2016, 0); " +
-                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-02-2016, 1); " +
-                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-02-2016, 1); " +
-                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-02-2016, 0); " +
-                "INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-02-2016, 1); ";
-
         db.execSQL("INSERT INTO Course (_id, name) VALUES (1, 'Software Development 101'); ");
         db.execSQL("INSERT INTO Course (_id, name) VALUES (2, 'Database Design 101'); ");
         db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (1, 1); ");
@@ -210,16 +178,55 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (7, 2); ");
         db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (8, 2); ");
         db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (9, 2); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-02-2016, 0); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-02-2016, 1); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-02-2016, 1); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-02-2016, 0); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-02-2016, 1); ");
-//
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-02-2016, 0); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-02-2016, 1); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-02-2016, 1); ");
-//        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (1, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (2, 2); ");
+        db.execSQL("INSERT INTO StudentCourse (StudentID, CourseID) VALUES (3, 2); ");
+    }
+
+    public void addStudentAttendanceRecords() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Student attendence Day 1 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-02-2016, 1); ");
+        // Student attendence Day 1 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-02-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-02-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-02-2016, 0); ");
+        // Student attendence Day 2 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-03-2016, 1); ");
+        // Student attendence Day 2 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-03-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-03-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-03-2016, 0); ");
+        // Student attendence Day 3 Class 1
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 1, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 1, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 1, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (4, 1, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (5, 1, 01-04-2016, 1); ");
+        // Student attendence Day 3 Class 2
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (1, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (2, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (3, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (6, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (7, 2, 01-04-2016, 0); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (8, 2, 01-04-2016, 1); ");
+        db.execSQL("INSERT INTO StudentAttendance (StudentID, CourseID, Date, Present) VALUES (9, 2, 01-04-2016, 1); ");
     }
 
     public boolean isDateForCourseEmpty(int courseID, String date) {
@@ -227,12 +234,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String query = "Select CourseID FROM StudentAttendance " +
                     " WHERE " +
                     "Date=\"" + date + "\" AND CourseID=" + courseID + " LIMIT 1;";
-
             SQLiteDatabase db = this.getWritableDatabase();
-
             Cursor cursor = db.rawQuery(query, null);
-            //System.out.println(query);
-            //System.out.println(cursor.getCount());
             if (cursor.getCount() > 0) {
                 retValue = false;
             }
@@ -254,9 +257,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     public void deleteRecords() {
-        String query = "Delete from StudentAttendance;";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        db.delete("StudentAttendance", null, null);
         db.close();
     }
 }

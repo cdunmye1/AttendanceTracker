@@ -21,37 +21,42 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
         super(MainActivity.class);
     }
 
+    @Override
+    public void setUp() {
+        MainActivity activity = getActivity();
+        MyDBHandler dbHandler = new MyDBHandler(activity, null, null, 1);
+        dbHandler.deleteRecords();
+    }
+
     public void testActivityExists() {
         MainActivity activity = getActivity();
         assertNotNull(activity);
     }
 
-    @Override
-    public void setUp() {
-        final MainActivity activity = getActivity();
-        activity.cleanDatabaseRecords();
-    }
-
-    // Should switch from Software 1 (default) to DB 1, which should have 5 students
-    public void testStudentListChangesWhenCourseSpinnerChanges() {
+    public void testStudentListPopulatesWhenCourseSpinnerChanges() {
         final MainActivity activity = getActivity();
         final ListView list = (ListView) activity.findViewById(R.id.listView);
-        //int initialListSize = list.getAdapter().getCount();
         getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
                 Spinner spinner = (Spinner) activity.findViewById(R.id.courseSpinner);
                 spinner.setSelection(1, true);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
-        int newListSize = list.getAdapter().getCount();
-        ArrayList<Student> newStudentList = activity.getArrayOfStudents();
-        assertEquals(newListSize, 5);
+        getInstrumentation().waitForIdleSync();
+        Spinner spinner = (Spinner) activity.findViewById(R.id.courseSpinner);
+        TouchUtils.tapView(this, spinner);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertEquals(7, activity.getArrayOfStudents().size());
     }
 
     public void testStudentCanBeToggledToBeMadeAbsent() {
@@ -72,6 +77,14 @@ public class MainActivityTests extends ActivityInstrumentationTestCase2<MainActi
         }
         ArrayList<Student> newStudentList = activity.getArrayOfStudents();
         assertEquals("(Absent) - Chad Smith", newStudentList.get(1).toString());
+    }
+
+    public void testSubmittingRecordsOnceShowsSuccessMessage() {
+        this.setUp();
+        final MainActivity activity = getActivity();
+        TouchUtils.clickView(this, (Button) activity.findViewById(R.id.submitButton));
+        TextView resultsTextView = (TextView) activity.findViewById(R.id.resultTextView);
+        assertEquals("Submitted!", resultsTextView.getText().toString());
     }
 
     public void testSubmittingRecordsTwiceShowsErrorMessage() {

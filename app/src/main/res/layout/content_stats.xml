@@ -48,6 +48,7 @@
 
         <ListView
             android:layout_width="match_parent"
+            android:fadeScrollbars="false"
             android:layout_height="13dp"
             android:id="@+id/coursesByStudentListView"
             android:layout_gravity="center_horizontal"

@@ -93,6 +93,13 @@ public class StatsActivity extends AppCompatActivity {
         });
     }
 
+    public ArrayList<String> getArrayOfStudentsPerCourse() {
+        return this.arrayOfStudentsPerCourse;
+    }
+
+    public ArrayList<String> getArrayOfCoursesPerStudent() {
+        return this.arrayOfCoursesPerStudent;
+    }
 
     public void didTapEnterAttendance(View view) {
         Intent intent = new Intent(this, MainActivity.class);

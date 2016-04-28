@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.this.arrayOfStudents.get(position).toggleIsPresent();
                 adapter.notifyDataSetChanged();
+                resultTextView.setText("");
             }
         });
         studentListView.setAdapter(adapter);
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.clear();
                 adapter.addAll(MainActivity.this.arrayOfStudents);
                 adapter.notifyDataSetChanged();
+                resultTextView.setText("");
             }
 
             @Override
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     public void setDate(View view) {
+        resultTextView.setText("");
         showDialog(999);
     }
 
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         dbHandler.addAttendanceRecord(this.currentCourse, this.arrayOfStudents, dateView.getText().toString());
-        resultTextView.setTextColor(Color.GREEN);
+        resultTextView.setTextColor(Color.BLUE);
         resultTextView.setText("Submitted!");
     }
 
@@ -132,9 +135,5 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Student> getArrayOfStudents() {
         return this.arrayOfStudents;
-    }
-
-    public void cleanDatabaseRecords() {
-        dbHandler.deleteRecords();
     }
 }
