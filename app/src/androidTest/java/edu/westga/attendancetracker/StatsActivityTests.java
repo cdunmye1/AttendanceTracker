@@ -55,30 +55,49 @@ public class StatsActivityTests extends ActivityInstrumentationTestCase2<StatsAc
         Spinner spinner = (Spinner) activity.findViewById(R.id.courseSpinner);
         TouchUtils.tapView(this, spinner);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertEquals(7, activity.getArrayOfStudentsPerCourse().size());
-    }
-    // By default Software Development 1 student percentages will be shown
-    public void testStudentStatisticsAreShownForUserWhoHasAttendedAllClasses() {
-        final StatsActivity activity = getActivity();
-        assertEquals("Bill Donovan - 100.00%", activity.getArrayOfStudentsPerCourse().get(0));
+        assertEquals(8, activity.getArrayOfStudentsPerCourse().size());
     }
 
     // By default Software Development 1 student percentages will be shown
-    public void testStudentStatisticsAreShownForUserWhoHasAttendedOddAmountOfClasses() {
+    public void testTheTotalCourseAverage() {
         final StatsActivity activity = getActivity();
-        assertEquals("Chad Smith - 33.33%", activity.getArrayOfStudentsPerCourse().get(1));
+        assertEquals("All Students: 73.33%", activity.getArrayOfStudentsPerCourse().get(0));
     }
 
     // By default Software Development 1 student percentages will be shown
-    public void testStudentInBothClassesShowsTwoValuesForStudentListByClass() {
+    public void testStudentStatisticsAreShownForUserWhoHasAttendedAllCourses() {
         final StatsActivity activity = getActivity();
-        assertEquals(2, activity.getArrayOfCoursesPerStudent().size());
+        assertEquals("Bill Donovan - 100.00%", activity.getArrayOfStudentsPerCourse().get(1));
     }
 
-    
+    // By default Software Development 1 student percentages will be shown
+    public void testStudentStatisticsAreShownForUserWhoHasAttendedOddAmountOfCourses() {
+        final StatsActivity activity = getActivity();
+        assertEquals("Chad Smith - 33.33%", activity.getArrayOfStudentsPerCourse().get(2));
+    }
+
+    // By default Bill Donovan will be shown
+    // This will show the 2 Courses the student is in + all of the courses combined
+    public void testStudentInTwoCoursesShowsThreeTotalValuesForStudentListByCourse() {
+        final StatsActivity activity = getActivity();
+        assertEquals(3, activity.getArrayOfCoursesPerStudent().size());
+    }
+
+    public void testAllCoursesCombinedPercentageShowsUpForStudent() {
+        final StatsActivity activity = getActivity();
+        assertEquals("All Courses - 83.33%", activity.getArrayOfCoursesPerStudent().get(0));
+    }
+
+    // By default Bill Donovan will be shown
+    // This will show the 2 Courses the student is in + all of the courses combined
+    public void testCoursePercentageShowsUpForStudent() {
+        final StatsActivity activity = getActivity();
+        assertEquals("Database Design 101 - 66.67%", activity.getArrayOfCoursesPerStudent().get(1));
+    }
+
 
 }

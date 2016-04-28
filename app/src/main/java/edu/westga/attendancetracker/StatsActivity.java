@@ -49,6 +49,7 @@ public class StatsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StatsActivity.this.arrayOfStudentsPerCourse.clear();
                 int courseID = arrayOfCourses.get(position).getCourseID();
+                StatsActivity.this.arrayOfStudentsPerCourse.add("All Students: " + String.format("%.2f", dbHandler.getCourseAttendanceRecord(courseID)) + "%");
                 for (Student student: dbHandler.getStudentsFromCourse(courseID)) {
                     String studentAttendance = String.format("%.2f", dbHandler.getStudentAttendanceRecordForCourse(courseID, student.getStudentID()));
                     StatsActivity.this.arrayOfStudentsPerCourse.add(student.getName() + " - " + studentAttendance + "%");
@@ -79,6 +80,7 @@ public class StatsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StatsActivity.this.arrayOfCoursesPerStudent.clear();
                 int studentID = arrayOfStudents.get(position).getStudentID();
+                StatsActivity.this.arrayOfCoursesPerStudent.add("All Courses: " + String.format("%.2f", dbHandler.getStudentAttendanceRecord(studentID)) + "%");
                 for (Course course: dbHandler.getCoursesFromStudent(studentID)) {
                     String courseAttendance = String.format("%.2f", dbHandler.getStudentAttendanceRecordForCourse(course.getCourseID(), studentID));
                     StatsActivity.this.arrayOfCoursesPerStudent.add(course.getName() + " - " + courseAttendance + "%");

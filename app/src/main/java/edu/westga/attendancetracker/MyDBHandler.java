@@ -46,7 +46,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_ATTENDANCE_TABLE);
-        addStudentAndCourseRecords(db);
+        addStudentAndCourseRecords();
         addStudentAttendanceRecords();
     }
 
@@ -150,7 +150,47 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return percentageAttended;
     }
 
-    private void addStudentAndCourseRecords(SQLiteDatabase db) {
+    public double getCourseAttendanceRecord(int courseID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String totalQuery = "Select CourseID from StudentAttendance WHERE CourseID=" + courseID + ";";
+        String attendedQuery = "Select CourseID from StudentAttendance WHERE CourseID=" + courseID + " AND Present=1;";
+        Cursor totalCursor = db.rawQuery(totalQuery, null);
+        Cursor attendedCursor = db.rawQuery(attendedQuery, null);
+        double percentageAttended = 0.0;
+        double totalRecords = totalCursor.getCount();
+        double totalAttended = attendedCursor.getCount();
+        if (totalAttended == 0.0) {
+            return 0;
+        }
+        percentageAttended = (totalAttended / totalRecords);
+        percentageAttended = percentageAttended * 100;
+        return percentageAttended;
+    }
+
+    public double getStudentAttendanceRecord(int studentID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String totalQuery = "Select CourseID from StudentAttendance WHERE StudentID=" + studentID + ";";
+        String attendedQuery = "Select CourseID from StudentAttendance WHERE StudentID=" + studentID + " AND Present=1;";
+        Cursor totalCursor = db.rawQuery(totalQuery, null);
+        Cursor attendedCursor = db.rawQuery(attendedQuery, null);
+        double percentageAttended = 0.0;
+        double totalRecords = totalCursor.getCount();
+        double totalAttended = attendedCursor.getCount();
+        if (totalAttended == 0.0) {
+            return 0;
+        }
+        percentageAttended = (totalAttended / totalRecords);
+        percentageAttended = percentageAttended * 100;
+        System.out.println(totalRecords);
+        System.out.println(totalAttended);
+        System.out.println(percentageAttended);
+        System.out.println(percentageAttended);
+
+        return percentageAttended;
+    }
+
+    private void addStudentAndCourseRecords() {
+        SQLiteDatabase db = this.getWritableDatabase();
         final ArrayList<Student> arrayOfUsers = new ArrayList<>();
         arrayOfUsers.add(new Student(1, "Chris Dunmyer"));
         arrayOfUsers.add(new Student(2, "Bill Donovan"));

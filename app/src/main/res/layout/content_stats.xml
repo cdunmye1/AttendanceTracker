@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Attendance Rate by Class:"
+            android:text="Attendance Rate by Course:"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal" />
 
